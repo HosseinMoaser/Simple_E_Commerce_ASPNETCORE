@@ -1,8 +1,36 @@
-﻿@{
+﻿@using Simple_E_Commerce.Data.Models
+
+@model IEnumerable<Product>
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <h1 class="display-4">Welcome To Simple E-commerce</h1>
+
+    <div class="row">
+       
+        @foreach(var item in Model)
+        {
+            <div class="col-3"> 
+
+                <div class="card"> 
+
+                    <img src="/images/@(item.Id).jpg" height="160" width="160" class="card-img-top img-thumbnail"/>
+
+                    <div class="card-body"> 
+                        <h5 class="card-title"> @item.ProductName </h5>
+                        <a class="btn btn-danger" asp-action="Details" asp-controller="Home"
+                        asp-route-id="@item.Id"> Details </a>
+                    </div>
+
+                </div>
+
+
+            </div>
+        }
+
+    </div>
+       
 </div>

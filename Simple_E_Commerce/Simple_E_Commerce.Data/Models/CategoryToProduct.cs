@@ -9,7 +9,7 @@ namespace Simple_E_Commerce.Data.Models
 {
     public class CategoryToProduct
     {
-        public int CtegoryId { get; set; }
+        public int CategoryId { get; set; }
         public int ProductId { get; set; }
 
         public Category Category { get; set; }

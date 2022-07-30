@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Simple_E_Commerce.Data.Context;
 
@@ -10,9 +11,10 @@ using Simple_E_Commerce.Data.Context;
 namespace Simple_E_Commerce.Data.Migrations
 {
     [DbContext(typeof(SimpleEcommerceDbContext))]
-    partial class SimpleEcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220730224039_ModifyCategoryId")]
+    partial class ModifyCategoryId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
