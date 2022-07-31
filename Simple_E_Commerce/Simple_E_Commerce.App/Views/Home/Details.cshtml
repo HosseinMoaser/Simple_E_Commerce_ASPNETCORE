@@ -1,0 +1,26 @@
+﻿@model DetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Product.ProductName + " Detail";
+}
+
+<div>
+    <h1 class="display-5">@Model.Product.ProductName</h1>
+    <hr/>
+
+    <img src="@($"/images/{Model.Product.Id}.jpg")" height="320" width="320"
+    alt="@Model.Product.ProductName"
+    class="img-thumbnail"/>
+    <p class="py-5 text-justify">@Model.Product.Description</p>
+    <p>Price: @Model.Product.Item.Price $</p>
+
+    <div>
+        <a class="btn btn-primary"
+        asp-controller="Home"
+        asp-action="AddToCart"
+        asp-route-ItemId="@Model.Product.ItemId">
+        Add To Cart
+        </a>
+    </div>
+</div>
+

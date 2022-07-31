@@ -1,0 +1,32 @@
+﻿@model CartViewModel
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.Item.Product.ProductName</td>
+                <td>@item.Quantity</td>
+                <td>@item.GetTotalPrice()</td>
+                <td>
+                    <a asp-action="RemoveCart" asp-route-itemId="@item.Item.Id">Remove</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<h5>Total Price : @Model.TotalCost</h5>
+
