@@ -1,0 +1,19 @@
+﻿@using Simple_E_Commerce.Data.Models
+@model Product
+
+<div class="col-4">
+
+    <div class="card">
+
+        <img src="/images/@(Model.Id).jpg" height="160" width="160" class="card-img-top img-thumbnail" />
+
+        <div class="card-body">
+            <h5 class="card-title"> @Model.ProductName </h5>
+            <a class="btn btn-danger" asp-action="Details" asp-controller="Home"
+               asp-route-id="@Model.Id"> Details </a>
+        </div>
+
+    </div>
+
+
+</div>

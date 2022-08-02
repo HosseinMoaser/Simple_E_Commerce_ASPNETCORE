@@ -1,0 +1,12 @@
+﻿@using Simple_E_Commerce.Data.Models;
+@model IEnumerable<ShowGroupsViewModel>
+
+<ul class="list-group">
+@foreach (var item in Model)
+{
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+       <a href="/Group/@item.GroupId/@item.GroupName">@item.GroupName</a>
+        <span class="badge badge-primary badge-pill">@item.ProductsCount</span>
+    </li>
+}
+</ul>

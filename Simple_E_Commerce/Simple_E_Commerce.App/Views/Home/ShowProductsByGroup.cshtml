@@ -1,0 +1,15 @@
+﻿@using Simple_E_Commerce.Data.Models
+@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "ShowProductsByGroup";
+}
+
+<h1>@ViewBag.GroupName</h1>
+<hr />
+
+<div class="row">
+    @foreach (var item in Model)
+{
+    <partial name="_ProductBox" model="@item" />
+}
+</div>

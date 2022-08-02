@@ -12,7 +12,7 @@ namespace Simple_E_Commerce.App.Controllers
         private readonly ILogger<HomeController> _logger;
         private SimpleEcommerceDbContext _simpleEcommerceDbContext;
         private static Cart _cart = new Cart();
-
+        
         public HomeController(ILogger<HomeController> logger, SimpleEcommerceDbContext simpleEcommerceDbContext)
         {
             _logger = logger;
@@ -90,6 +90,19 @@ namespace Simple_E_Commerce.App.Controllers
            
             return View(viewModel);
         }
+
+        [Route("Group/{id}/{name}")]
+        public IActionResult ShowProductsByGroup(int id , string name)
+        {
+            ViewBag.GroupName = name;
+            var products = _simpleEcommerceDbContext.CategoryToProducts
+                .Where(c => c.CategoryId == id)
+                .Include(c => c.Product)
+                .Select(c => c.Product)
+                .ToList();
+            return View(products);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
