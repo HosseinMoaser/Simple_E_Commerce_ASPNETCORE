@@ -1,0 +1,18 @@
+﻿@model AccountRegisterViewModel
+
+@{
+    ViewData["Title"] = "RegisterSuccess";
+}
+
+<h1>Register Done..!</h1>
+
+<div class="alert alert-success">
+    Dear user; you are registered with the user name: @Model.UserName. You can login with the link below: 
+    <p>
+        <a asp-controller="Account" asp-action="Login">
+            Login
+        </a>
+    </p>
+</div>
+
+

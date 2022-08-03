@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Simple_E_Commerce.Data.Context;
 using Simple_E_Commerce.Data.Repositories;
@@ -18,8 +19,19 @@ builder.Services.AddDbContext<SimpleEcommerceDbContext>(options =>
 #region IoC
 
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 #endregion
+
+//Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option =>
+    {
+        option.LoginPath = "/Account/Login";
+        option.LogoutPath = "/Account/Logout";
+        option.ExpireTimeSpan = TimeSpan.FromDays(15);
+    });
+
 
 var app = builder.Build();
 
@@ -32,6 +44,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

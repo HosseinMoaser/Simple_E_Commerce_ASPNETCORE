@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Simple_E_Commerce.Data.Context;
 
@@ -11,9 +12,10 @@ using Simple_E_Commerce.Data.Context;
 namespace Simple_E_Commerce.Data.Migrations
 {
     [DbContext(typeof(SimpleEcommerceDbContext))]
-    partial class SimpleEcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220802152424_AddUsersTable")]
+    partial class AddUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
