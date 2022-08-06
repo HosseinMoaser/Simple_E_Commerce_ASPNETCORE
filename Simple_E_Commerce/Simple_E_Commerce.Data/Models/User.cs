@@ -30,5 +30,8 @@ namespace Simple_E_Commerce.Data.Models
 
         public bool IsManager { get; set; }
 
+
+        public List<Order> Orders { get; set; }
+
     }
 }

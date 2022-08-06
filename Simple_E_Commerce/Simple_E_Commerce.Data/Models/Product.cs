@@ -11,5 +11,7 @@
         public Item Item { get; set; }
         public ICollection<CategoryToProduct> CategoryToProducts { get; set; }
 
+        public List<OrderDetail> OrderDetails { get; set; }
+
     }
 }

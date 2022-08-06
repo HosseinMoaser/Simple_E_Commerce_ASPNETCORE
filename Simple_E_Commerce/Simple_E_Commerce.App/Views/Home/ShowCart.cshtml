@@ -1,9 +1,12 @@
-﻿@model CartViewModel
+﻿@using Simple_E_Commerce.Data.Models
+@model Order
 @{
     ViewData["Title"] = "Your Cart";
 }
 
-<table class="table table-striped">
+@if(Model != null)
+{
+    <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
             <th>Product</th>
@@ -14,19 +17,26 @@
     </thead>
 
     <tbody>
-        @foreach (var item in Model.CartItems)
+        @foreach (var item in Model.OrderDetails)
         {
             <tr>
-                <td>@item.Item.Product.ProductName</td>
+                <td>@item.Product.ProductName</td>
                 <td>@item.Quantity</td>
-                <td>@item.GetTotalPrice()</td>
+                <td>@(item.Quantity * item.Price)</td>
                 <td>
-                    <a asp-action="RemoveCart" asp-route-itemId="@item.Item.Id">Remove</a>
+                    <a asp-action="RemoveCart" asp-route-detailId="@item.DetailId">Remove</a>
                 </td>
             </tr>
         }
     </tbody>
 
 </table>
-<h5>Total Price : @Model.TotalCost</h5>
+<h5>Total Price : @Model.OrderDetails.Sum(s=> s.Quantity * s.Price))</h5>
 
+}
+else
+{
+    <div class="alert alert-danger">
+        There is no purchase invoice..!
+    </div>
+}

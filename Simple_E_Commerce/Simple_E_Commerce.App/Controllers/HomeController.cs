@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Simple_E_Commerce.App.Models;
 using Simple_E_Commerce.Data.Context;
 using Simple_E_Commerce.Data.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Simple_E_Commerce.App.Controllers
 {
@@ -11,8 +13,7 @@ namespace Simple_E_Commerce.App.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private SimpleEcommerceDbContext _simpleEcommerceDbContext;
-        private static Cart _cart = new Cart();
-        
+
         public HomeController(ILogger<HomeController> logger, SimpleEcommerceDbContext simpleEcommerceDbContext)
         {
             _logger = logger;
@@ -31,39 +32,73 @@ namespace Simple_E_Commerce.App.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult AddToCart(int itemId)
         {
             var product = _simpleEcommerceDbContext.Products
                 .Include(p => p.Item)
-                .SingleOrDefault(p=> p.Id == itemId);
+                .SingleOrDefault(p => p.Id == itemId);
 
-            if(product != null)
+            if (product != null)
             {
-                var cartItem = new CartItem()
+                int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
+                var order = _simpleEcommerceDbContext.Orders.FirstOrDefault(o => o.UserId == userId && !o.IsFinally);
+                if (order != null)
                 {
-                    Item = product.Item,
-                    Quantity = 1
-                };
-                _cart.AddItem(cartItem);
+                    var orderDetail = _simpleEcommerceDbContext.OrderDetails.FirstOrDefault(d => d.OrderId == order.OrderId
+                    && d.ProductId == product.Id);
+                    if (orderDetail != null)
+                        orderDetail.Quantity += 1;
+                    else
+                        _simpleEcommerceDbContext.OrderDetails.Add(new OrderDetail()
+                        {
+                            OrderId = order.OrderId,
+                            ProductId = product.Id,
+                            Price = product.Item.Price,
+                            Quantity = 1
+                        });
+                }
+                else
+                {
+                    order = new Order()
+                    {
+                        IsFinally = false,
+                        UserId = userId,
+                        CreateDate = DateTime.Now,
+                    };
+                    _simpleEcommerceDbContext.Orders.Add(order);
+                    _simpleEcommerceDbContext.SaveChanges();
+                    _simpleEcommerceDbContext.OrderDetails.Add(new OrderDetail()
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = product.Id,
+                        Price = product.Item.Price,
+                        Quantity = 1
+                    });
+                }
+                _simpleEcommerceDbContext.SaveChanges();
             }
 
             return RedirectToAction("ShowCart");
         }
 
+        [Authorize]
         public IActionResult ShowCart()
         {
-            var cartViewModel = new CartViewModel()
-            {
-                CartItems = _cart.CartItems,
-                TotalCost = _cart.CartItems.Sum(c=> c.GetTotalPrice())
-            };
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
+            var order = _simpleEcommerceDbContext.Orders.Where(o => o.UserId == userId && !o.IsFinally)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(c => c.Product).FirstOrDefault();
 
-            return View(cartViewModel);
+            return View(order);
         }
 
-        public IActionResult RemoveCart(int itemId)
+        [Authorize]
+        public IActionResult RemoveCart(int detailId)
         {
-            _cart.RemoveItem(itemId);
+            var orderDetail = _simpleEcommerceDbContext.OrderDetails.Find(detailId);
+            _simpleEcommerceDbContext.Remove(orderDetail);
+            _simpleEcommerceDbContext.SaveChanges();
             return RedirectToAction("ShowCart");
         }
 
@@ -87,12 +122,12 @@ namespace Simple_E_Commerce.App.Controllers
                 Product = product,
                 Categories = categories
             };
-           
+
             return View(viewModel);
         }
 
         [Route("Group/{id}/{name}")]
-        public IActionResult ShowProductsByGroup(int id , string name)
+        public IActionResult ShowProductsByGroup(int id, string name)
         {
             ViewBag.GroupName = name;
             var products = _simpleEcommerceDbContext.CategoryToProducts
